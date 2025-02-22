@@ -19,9 +19,9 @@ Para entrenar al model necesitabamos obtener informacion de distintas webs de ve
 
 De estas webs hemos obtenido los siguientes datos:
 
-|  Modelo  | Precio | VRAM | Tipo VRAM | Puertos | Ventiladores | Dimensiones | Energuia Usada |
-|----------|----------|----------|----------|----------|----------|----------|------------|
-| Texto    | Int (cent)   | Int(MB) | Texto | Texto* | Int(N.) | Array[Int](Longitud, Ancho, Altura) | Int(w) |
+| Modelo | Precio     | VRAM    | Tipo VRAM | Puertos | Ventiladores | Dimensiones                         | Energuia Usada | URL  |
+| ------ | ---------- | ------- | --------- | ------- | ------------ | ----------------------------------- | -------------- | ---- |
+| Texto  | Int (cent) | Int(MB) | Texto     | Texto\* | Int(N.)      | Array[Int](Longitud, Ancho, Altura) | Int(w)         | Text |
 
 ### Donde guardar la informacion
 
