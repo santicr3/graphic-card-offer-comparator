@@ -21,7 +21,7 @@ De estas webs hemos obtenido los siguientes datos:
 
 | Modelo | Precio     | VRAM    | Tipo VRAM | Puertos | Ventiladores | Dimensiones                         | Energuia Usada | URL  |
 | ------ | ---------- | ------- | --------- | ------- | ------------ | ----------------------------------- | -------------- | ---- |
-| Texto  | Int (cent) | Int(MB) | Texto     | Texto\* | Int(N.)      | Array[Int](Longitud, Ancho, Altura) | Int(w)         | Text |
+| Texto  | Int (cent) | Int(GB) | Texto     | Texto\* | Int(N.)      | Array[Int](Longitud, Ancho, Altura) | Int(w)         | Text |
 
 ### Donde guardar la informacion
 
