@@ -1,4 +1,6 @@
 from requests_html import HTMLSession
+import re
+import utils
 
 base_url = "https://www.coolmod.com"
 url = base_url + "/tarjetas-graficas/"
@@ -18,16 +20,15 @@ def getAllLiks(url, product_class):
     
     return urls
 
-urls = getAllLiks(url, 'product-link')
-
+urls = []
+for i in range(5):
+    urls.extend(getAllLiks(url+f'?pagina={i}', 'product-link'))
 
 # Get data of each product
-#
-
 
 session = HTMLSession()
 data_lines = []
-cols = "modelo,precio,vram,tipo-vram,puertos,dimensiones,consumo"
+cols = "url,modelo,precio,vram,tipo-vram,hdmi,dp,dimensiones,consumo"
 for url in urls:
     print(base_url+url)
     r = session.get(base_url + url)
@@ -35,42 +36,42 @@ for url in urls:
     
     model = r.html.find("h1.text-2xl", first=True).text
     
-    price = r.html.find("span.product_price", first=True).text
+    price = r.html.find("span.product_price", first=True).text.replace('.','')
     price_dec = r.html.find("span.dec_price", first=True).text
     
-    price = price + "," + price_dec
-    
+    price = price+price_dec
     attributes = r.html.find("li")
+
     for attribute in attributes:
         if 'DDR' in attribute.text and len(attribute.text) < 30:
             vram = attribute.text
             vram_array = vram.split(' ')
             vram_type = next((word for word in vram_array if 'DDR' in word), None)
+
+        if 'GB' in attribute.text and len(attribute.text) < 30:
+            vram = attribute.text
+            vram_array = vram.split(' ')
             vram_size = next((word for word in vram_array if 'GB' in word), None)
-    
-        if any(port in attribute.text for port in ['HDMI', 'DisplayPort', 'DP', 'VGA', 'DVI'])  :
-            ports = attribute.text
-    
-        if 'PSU' in attribute.text or any(port in attribute.text for port in ['watts', 'Watts']):
-            consume = attribute.text
-    
-        if any(port in attribute.text for port in ['mm', 'milimetros', 'cm', 'centimetros']):
-            size = attribute.text
-    
+            vram_size = utils.vram_size_clean(attribute.text)
+
+        if any(port in attribute.text for port in ['DisplayPort', 'DP', 'HDMI']):
+            hdmi, dp = utils.ports_clean(attribute.text)
+        
+        if re.search(r'\d+w', attribute.text, re.IGNORECASE):   
+            consume = utils.consume_clean(attribute.text)
+
         if 'ventiladores' in attribute.text:
-            print(attribute.text)
             words = attribute.text.split(' ')
-            index_ventiladores = words.index('ventiladores')
-            print(index_ventiladores)
+            index_ventiladores = next((word for word in vram_array if 'ventiladores' in word), None)
+
             n_ventiladores = words[-1]
-            print(n_ventiladores)
-    data_str = f"{model},{price},{vram_size},{vram_type},{ports},{consume},{size}"
+        
+    data_str = f"{base_url+url},{model},{price},{vram_size},{vram_type},{hdmi},{dp},{consume}"
     data_lines.append(data_str)
 
-with open('data.csv', 'w+') as f:
+with open('results/data.csv', 'w+') as f:
     lines = f.readlines()
     if not len(lines):
         f.write(cols+'\n')
     for data_str in data_lines:
         f.write(data_str+'\n')
-# product_link_class = "product-link"
