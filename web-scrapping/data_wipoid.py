@@ -49,9 +49,10 @@ def main():
         r.status_code
         
         model = r.html.find("h1.product-detail-name", first=True).text
-        if 'adaptador' in model.lower() or 'adaptador' in model.lower() or 'aio' in model.lower():
+        if(utils.exclude(model)):
             print('Not a graphic card... skiping')
             continue  
+
         price = r.html.find("span.current-price-value", first=True).text.replace(',','').replace('.','').replace('€','')
         
         attributes = r.html.find("p")
@@ -82,6 +83,3 @@ def main():
         
 
     utils.add_to_file(data_lines, cols)
-
-
-main()

@@ -41,3 +41,7 @@ def add_to_file(data_lines, cols):
         with open('results/data.csv', 'a+') as f:                
             for data_str in data_lines:
                 f.write(data_str + '\n')
+
+def exclude(model):
+    return ('adaptador' in model.lower() or 'soporte' in model.lower() or 'aio' in model.lower() or 'cable' in model.lower())
+

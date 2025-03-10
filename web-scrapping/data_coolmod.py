@@ -32,11 +32,22 @@ def main():
     cols = "url,Modelo,Precio,VRAM,Tipo VRAM,HDMI,DisplayPort,Energia"
     for url in urls:
         print(base_url+url)
+        model = ''
+        price = ''
+        vram_size = ''
+        vram_type = ''
+        hdmi = ''
+        dp = ''
+        consume = ''
+
         r = session.get(base_url + url)
         r.status_code
         
         model = r.html.find("h1.text-2xl", first=True).text
-        
+        if(utils.exclude(model)):
+            print('Not a graphic card... skiping')
+            continue  
+
         price = r.html.find("span.product_price", first=True).text.replace('.','')
         price_dec = r.html.find("span.dec_price", first=True).text
         
@@ -56,10 +67,12 @@ def main():
             if any(port in attribute.text for port in ['DisplayPort', 'DP', 'HDMI']):
                 hdmi, dp = utils.ports_clean(attribute.text)
             
-            if re.search(r'\d+\s?W', attribute.text, re.IGNORECASE):   
-                consume = utils.consume_clean(attribute.text)
+            if re.search(r'\d+\s?W', attribute.text, re.IGNORECASE) and len(attribute.text) and consume == '':
+                match = re.search(r'\d+\s?W', attribute.text, re.IGNORECASE)
+                consume = match.group()
+                consume = re.search(r'\d+', consume, re.IGNORECASE).group() if consume else ''
 
-        if(not vram_size):
+        if not vram_size:
             match = re.search(r'(?<!\S)(\d+)\s?GB(?!\S)', model)
             vram_size = match.group(1) if match else '' 
         data_str = f"{base_url+url},{model},{price},{vram_size},{vram_type},{hdmi},{dp},{consume}"

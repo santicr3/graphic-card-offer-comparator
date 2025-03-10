@@ -10,11 +10,25 @@ palette = {
 
 def main(page: ft.Page):
     page.bgcolor = palette['black']
-    ft.TextStyle.color = ft.Colors.YELLOW
+    default_text = ft.TextStyle(color=palette['green'])
     page.font = {
-        'JetBrains Mono': 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap'
+        'JetBrains Mono': 'JetBrainsMono-VariableFont_wght.ttf'
     }
-    page.add(ft.Text('Hello', Text=ft.Colors.YELLOW))
-    
 
-ft.app(target=main)
+    page.theme = ft.Theme(
+        text_theme=ft.TextTheme(
+            body_medium=ft.TextStyle(
+                size=16, 
+                font_family="JetBrains Mono",
+                color=palette['green']
+            )
+        )
+    )
+    page.add(ft.Row([
+        ft.Text('Graphic Comparator',size=36,
+                font_family="JetBrains Mono",
+                text_align="CENTER")],
+        alignment=ft.MainAxisAlignment.CENTER,))
+
+
+ft.app(target=main, assets_dir="assets", view=ft.AppView.WEB_BROWSER)
