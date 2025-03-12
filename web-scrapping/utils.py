@@ -32,13 +32,13 @@ def vram_type_clean(type):
         return new_type.group()
 
 def add_to_file(data_lines, cols):
-    if not os.path.exists('results/data.csv'):
-        with open('results/data.csv', 'w') as f:
+    if not os.path.exists('tarjetas_graficas.csv'):
+        with open('tarjetas_graficas.csv', 'w') as f:
             f.write(cols + '\n') 
             for data_str in data_lines:
                 f.write(data_str + '\n')
     else:
-        with open('results/data.csv', 'a+') as f:                
+        with open('tarjetas_graficas.csv', 'a+') as f:                
             for data_str in data_lines:
                 f.write(data_str + '\n')
 
