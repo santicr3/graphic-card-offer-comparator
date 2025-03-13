@@ -8,26 +8,42 @@ def main(page: ft.Page):
     card_data = utils.card_data
     palette = utils.palette
 
-    model = custom_components.input('Nombre del modelo...', 'text', 'model')
-    price = custom_components.input('Precio...', 'number', 'price')
+    model, model_wrap = custom_components.input('Nombre del modelo...', 'text', 'model')
+    price, price_wrap = custom_components.input('Precio...', 'number', 'price')
         
-    vram_size = custom_components.input('Tamaño de VRAM', 'number', 'vram_size')
-    vram_type = custom_components.input('Tipo de VRAM', 'dropdown', 'vram_type', ['GDDR3', 'GDDR4', 'GDDR5', 'GDDR6', 'GDDR6X', 'GDDR7', 5])
+    vram_size, vram_size_wrap = custom_components.input('Tamaño de VRAM', 'number', 'vram_size')
+    vram_type, vram_type_wrap = custom_components.input('Tipo de VRAM', 'dropdown', 'vram_type', ['GDDR3', 'GDDR4', 'GDDR5', 'GDDR6', 'GDDR6X', 'GDDR7', 5])
 
-    hdmi_ports = custom_components.input('HDMI Ports...', 'number', 'hdmi_ports', size=4)
-    dp_ports = custom_components.input('DisplayPort Ports...', 'number', 'dp_ports', size=4)
-    consume = custom_components.input('Energetic consume...', 'number', 'consume', size=4)
+    hdmi_ports, hdmi_ports_wrap = custom_components.input('HDMI Ports...', 'number', 'hdmi_ports', size=4)
+    dp_ports, dp_ports_wrap = custom_components.input('DisplayPort Ports...', 'number', 'dp_ports', size=4)
+    consume, consume_wrap = custom_components.input('Energetic consume...', 'number', 'consume', size=4)
+
+    result_dialog = ft.AlertDialog(
+            modal=False,
+            title=ft.Text(f"Esta oferta es:", color=palette['white']),
+            bgcolor=palette['blue'],
+        )
+
+    def open_dialog(result):
+        result_dialog.content = ft.Text(f"{result}", color=palette['red'] if (result == 'Muy mala, el precio está muy por encima del esperado.' or result == 'Mala, el precio esta un poco por encima del esperado.') else palette['green'])
+        result_dialog.update()
+        page.open(result_dialog)
+
 
     def submit(e):
         print(f"http://127.0.0.1:5000/grafica/{card_data['price']}/{card_data['vram_size']}/{card_data['hdmi_ports']}/{card_data['dp_ports']}/{card_data['consume']}/{card_data['vram_type']}")
         response = requests.get(f"http://127.0.0.1:5000/grafica/{card_data['price']}/{card_data['vram_size']}/{card_data['hdmi_ports']}/{card_data['dp_ports']}/{card_data['consume']}/{card_data['vram_type']}")
         if response.status_code == 200:
-            result_text.value = response.json()["title"]
+            
+            offer = response.json()["Estado"] 
+            print(response.json())
+            open_dialog(offer)
             page.update()
-        print(response.json())
+        else:
+            open_dialog(f"Error en la petición:{response.json()}")
 
-    def clean(e):
-        card_data = {
+    def clean(e, card_data):
+        card_data.update({
         'model': '',
         'price': 0.0,
         'vram_size': 0,
@@ -35,12 +51,11 @@ def main(page: ft.Page):
         'hdmi_ports': 0,
         'dp_ports': 0,
         'consume': 0
-        }
+        })
 
         model.value = ''
-        model.update() 
+        price.value = ''
         page.update()
-        print(model)
 
 
     page.bgcolor = palette['black']
@@ -65,20 +80,21 @@ def main(page: ft.Page):
                 text_align="CENTER")],
         alignment=ft.MainAxisAlignment.CENTER,))
 
-
     
+    page.add(result_dialog)
+
     page.add(ft.ResponsiveRow([
-        model,
-        price,
+        model_wrap,
+        price_wrap,
         ]),
         ft.ResponsiveRow([
-        vram_size,
-        vram_type,
+        vram_size_wrap,
+        vram_type_wrap,
         ]),
         ft.ResponsiveRow([
-        hdmi_ports,
-        dp_ports,
-        consume
+        hdmi_ports_wrap,
+        dp_ports_wrap,
+        consume_wrap
         ])
     )
     
@@ -98,7 +114,7 @@ def main(page: ft.Page):
                 content=ft.CupertinoButton(
                     content=ft.Text('Limpiar', color=palette['white']),
                     bgcolor=palette['red'],
-                    on_click=clean,
+                    on_click=lambda e: clean(e, card_data),
                     expand=True,
                     width=1920
                 ),

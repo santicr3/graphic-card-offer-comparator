@@ -6,7 +6,16 @@ palette = utils.palette
 def input(placeholder, type, name, options=[], size=6):
     match type:
         case 'text':
-            return ft.Column(
+            input = ft.TextField(
+                            bgcolor=palette['blue'],
+                            color=palette['white'],
+                            border=ft.InputBorder.NONE,
+                            content_padding=25,
+                            hint_text=placeholder,
+                            hint_style=ft.TextStyle(color=palette['grey']),
+                            on_change=lambda e: set_value(name, e.control.value),
+                            )
+            input_wrap = ft.Column(
                 col={"sm": 12, "md": size, "lg": size},
                 controls=[
                     ft.Container(
@@ -16,32 +25,15 @@ def input(placeholder, type, name, options=[], size=6):
                             color=ft.Colors.BLACK,
                             offset=ft.Offset(0, 4)
                         ),
-                        content=ft.TextField(
-                            bgcolor=palette['blue'],
-                            color=palette['white'],
-                            border=ft.InputBorder.NONE,
-                            content_padding=25,
-                            hint_text=placeholder,
-                            hint_style=ft.TextStyle(color=palette['grey']),
-                            on_change=lambda e: set_value(name, e.control.value),
-                            ),
+                        content=input,
                         border_radius=10,
                     )
                 ]
             )
+            return input, input_wrap
         case 'number':
-            return ft.Column(
-                col={"sm": 12, "md": size, "lg": size},
-                controls=[
-                    ft.Container(
-                        shadow=ft.BoxShadow(
-                            spread_radius=0,
-                            blur_radius=4,
-                            color=ft.Colors.BLACK,
-                            offset=ft.Offset(0, 4)
-                        ),
-                        content=ft.TextField(
-                            input_filter=ft.NumbersOnlyInputFilter(),
+            input = ft.TextField(
+                            input_filter=ft.InputFilter(allow=True, regex_string=r'^\d*([.,]?\d*)?$', replacement_string=""),
                             bgcolor=palette['blue'],
                             color=palette['white'],
                             border=ft.InputBorder.NONE,
@@ -49,13 +41,8 @@ def input(placeholder, type, name, options=[], size=6):
                             hint_text=placeholder,
                             hint_style=ft.TextStyle(color=palette['grey']),
                             on_change=lambda e: set_value(name, e.control.value),
-                            ),
-                        border_radius=10,
-                    )
-                ]
-            )
-        case 'dropdown':
-            return ft.Column(
+                            )
+            input_wrap = ft.Column(
                 col={"sm": 12, "md": size, "lg": size},
                 controls=[
                     ft.Container(
@@ -65,7 +52,14 @@ def input(placeholder, type, name, options=[], size=6):
                             color=ft.Colors.BLACK,
                             offset=ft.Offset(0, 4)
                         ),
-                        content=ft.Dropdown(
+                        content=input,
+                        border_radius=10,
+                    )
+                ]
+            )
+            return input, input_wrap
+        case 'dropdown':
+            input =ft.Dropdown(
                             hint_text="Tipo de VRAM",
                             hint_style=ft.TextStyle(color=palette['grey']),
                             bgcolor=palette['blue'],
@@ -76,13 +70,23 @@ def input(placeholder, type, name, options=[], size=6):
                             width=1920,
                             options=get_options(options),
                             on_change=lambda e: dropdown_changed(name, e.control.value),
+                        )
+            input_wrap = ft.Column(
+                col={"sm": 12, "md": size, "lg": size},
+                controls=[
+                    ft.Container(
+                        shadow=ft.BoxShadow(
+                            spread_radius=0,
+                            blur_radius=4,
+                            color=ft.Colors.BLACK,
+                            offset=ft.Offset(0, 4)
                         ),
+                        content=input,
                         border_radius=10,
-                        bgcolor=palette['blue'],
-                        expand=True
                     )
                 ]
             )
+            return input, input_wrap
             
 
 
