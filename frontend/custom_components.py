@@ -81,6 +81,7 @@ def input(placeholder, type, name, options=[], size=6):
                             color=ft.Colors.BLACK,
                             offset=ft.Offset(0, 4)
                         ),
+                        bgcolor=palette['blue'],
                         content=input,
                         border_radius=10,
                     )

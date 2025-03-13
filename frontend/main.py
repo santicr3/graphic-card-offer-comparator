@@ -12,7 +12,7 @@ def main(page: ft.Page):
     price, price_wrap = custom_components.input('Precio...', 'number', 'price')
         
     vram_size, vram_size_wrap = custom_components.input('Tamaño de VRAM', 'number', 'vram_size')
-    vram_type, vram_type_wrap = custom_components.input('Tipo de VRAM', 'dropdown', 'vram_type', ['GDDR3', 'GDDR4', 'GDDR5', 'GDDR6', 'GDDR6X', 'GDDR7', 5])
+    vram_type, vram_type_wrap = custom_components.input('Tipo de VRAM', 'dropdown', 'vram_type', ['GDDR3', 'GDDR4', 'GDDR5', 'GDDR6', 'GDDR6X', 'GDDR7'])
 
     hdmi_ports, hdmi_ports_wrap = custom_components.input('HDMI Ports...', 'number', 'hdmi_ports', size=4)
     dp_ports, dp_ports_wrap = custom_components.input('DisplayPort Ports...', 'number', 'dp_ports', size=4)
