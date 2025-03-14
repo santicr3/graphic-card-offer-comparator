@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-El objetivo es conseguir un modelo de Inteligencia Artificial capaz de obtener el precio de una tarjeta gráfica basandose en sus cualidades
+El objetivo es entrenar un modelo de Inteligencia Artificial capaz de obtener el precio de una tarjeta gráfica basandose en sus cualidades
 ## Proceso
 
 ### Obetner informacion
