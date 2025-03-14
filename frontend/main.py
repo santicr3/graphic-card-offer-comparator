@@ -9,14 +9,14 @@ def main(page: ft.Page):
     palette = utils.palette
 
     model, model_wrap = custom_components.input('Nombre del modelo...', 'text', 'model')
-    price, price_wrap = custom_components.input('Precio...', 'number', 'price')
+    price, price_wrap = custom_components.input('Precio...', 'number', 'price', size=12)
         
     vram_size, vram_size_wrap = custom_components.input('Tamaño de VRAM', 'number', 'vram_size')
     vram_type, vram_type_wrap = custom_components.input('Tipo de VRAM', 'dropdown', 'vram_type', ['GDDR3', 'GDDR4', 'GDDR5', 'GDDR6', 'GDDR6X', 'GDDR7'])
 
-    hdmi_ports, hdmi_ports_wrap = custom_components.input('HDMI Ports...', 'number', 'hdmi_ports', size=4)
-    dp_ports, dp_ports_wrap = custom_components.input('DisplayPort Ports...', 'number', 'dp_ports', size=4)
-    consume, consume_wrap = custom_components.input('Energetic consume...', 'number', 'consume', size=4)
+    hdmi_ports, hdmi_ports_wrap = custom_components.input('Puertos HDMI...', 'number', 'hdmi_ports', size=4)
+    dp_ports, dp_ports_wrap = custom_components.input('Puertos DisplayPort...', 'number', 'dp_ports', size=4)
+    consume, consume_wrap = custom_components.input('Consumo energetico...', 'number', 'consume', size=4)
 
     result_dialog = ft.AlertDialog(
             modal=False,
@@ -24,8 +24,8 @@ def main(page: ft.Page):
             bgcolor=palette['blue'],
         )
 
-    def open_dialog(result):
-        result_dialog.content = ft.Text(f"{result}", color=palette['red'] if (result == 'Muy mala, el precio está muy por encima del esperado.' or result == 'Mala, el precio esta un poco por encima del esperado.') else palette['green'])
+    def open_dialog(result, precio_predicho):
+        result_dialog.content = ft.Text(f"{result}\nEl precio estimado es: {precio_predicho/100}€", color=palette['red'] if (result == 'Muy mala, el precio está muy por encima del esperado.' or result == 'Mala, el precio esta un poco por encima del esperado.') else palette['green'])
         result_dialog.update()
         page.open(result_dialog)
 
@@ -36,18 +36,19 @@ def main(page: ft.Page):
         if response.status_code == 200:
             
             offer = response.json()["Estado"] 
+            precio_predicho = response.json()["Precio_Predicho"]
             print(response.json())
-            open_dialog(offer)
+            open_dialog(offer, precio_predicho)
             page.update()
         else:
-            open_dialog(f"Error en la petición:{response.json()}")
+            print(f"Error en la petición:{response.json()}")
 
     def clean(e, card_data):
         card_data.update({
         'model': '',
         'price': 0.0,
         'vram_size': 0,
-        'vram_type': ' ',
+        'vram_type': card_data['vram_type'],
         'hdmi_ports': 0,
         'dp_ports': 0,
         'consume': 0
@@ -55,6 +56,13 @@ def main(page: ft.Page):
 
         model.value = ''
         price.value = ''
+
+        vram_size.value = ''
+        vram_type.value = ''
+
+        hdmi_ports.value = ''
+        dp_ports.value = ''
+        consume.value = ''
         page.update()
 
 
@@ -84,7 +92,6 @@ def main(page: ft.Page):
     page.add(result_dialog)
 
     page.add(ft.ResponsiveRow([
-        model_wrap,
         price_wrap,
         ]),
         ft.ResponsiveRow([

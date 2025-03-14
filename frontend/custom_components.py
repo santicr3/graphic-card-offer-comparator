@@ -11,7 +11,7 @@ def input(placeholder, type, name, options=[], size=6):
                             color=palette['white'],
                             border=ft.InputBorder.NONE,
                             content_padding=25,
-                            hint_text=placeholder,
+                            label=placeholder,
                             hint_style=ft.TextStyle(color=palette['grey']),
                             on_change=lambda e: set_value(name, e.control.value),
                             )
@@ -38,7 +38,7 @@ def input(placeholder, type, name, options=[], size=6):
                             color=palette['white'],
                             border=ft.InputBorder.NONE,
                             content_padding=25,
-                            hint_text=placeholder,
+                            label=placeholder,
                             hint_style=ft.TextStyle(color=palette['grey']),
                             on_change=lambda e: set_value(name, e.control.value),
                             )
@@ -60,7 +60,7 @@ def input(placeholder, type, name, options=[], size=6):
             return input, input_wrap
         case 'dropdown':
             input =ft.Dropdown(
-                            hint_text="Tipo de VRAM",
+                            label="Tipo de VRAM",
                             hint_style=ft.TextStyle(color=palette['grey']),
                             bgcolor=palette['blue'],
                             color=palette['white'],
