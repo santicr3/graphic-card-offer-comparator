@@ -83,7 +83,7 @@ def main(page: ft.Page):
         font_family="JetBrains Mono"
     )
     page.add(ft.Row([
-        ft.Text('Graphic Comparator',size=36,
+        ft.Text('Gaming Graphic Cards Comparator',size=36,
                 font_family="JetBrains Mono",
                 text_align="CENTER")],
         alignment=ft.MainAxisAlignment.CENTER,))
